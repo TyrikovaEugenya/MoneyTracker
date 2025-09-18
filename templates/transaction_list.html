@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Записи о движении средств</h2>
+
+<!-- Форма фильтров (обновляет таблицу без перезагрузки) -->
+<form hx-get="{% url 'transaction_list' %}" hx-target="#transaction-table" class="card card-body mb-4 shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label for="start_date" class="form-label">Дата от</label>
+            <input type="date" id="start_date" name="start_date" class="form-control"
+                   value="{{ request.GET.start_date }}">
+        </div>
+        <div class="col-md-3">
+            <label for="end_date" class="form-label">Дата до</label>
+            <input type="date" id="end_date" name="end_date" class="form-control"
+                   value="{{ request.GET.end_date }}">
+        </div>
+        <div class="col-md-3">
+            <label for="status" class="form-label">Статус</label>
+            <select id="status" name="status" class="form-select">
+                <option value="">Все статусы</option>
+                {% for status in statuses %}
+                    <option value="{{ status.id }}"
+                            {% if request.GET.status == status.id|stringformat:"i" %}selected{% endif %}>
+                        {{ status.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="type" class="form-label">Тип</label>
+            <select id="type" name="type" class="form-select">
+                <option value="">Все типы</option>
+                {% for t in types %}
+                    <option value="{{ t.id }}"
+                            {% if request.GET.type == t.id|stringformat:"i" %}selected{% endif %}>
+                        {{ t.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="category" class="form-label">Категория</label>
+            <select id="category" name="category" class="form-select">
+                <option value="">Все категории</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}"
+                            {% if request.GET.category == cat.id|stringformat:"i" %}selected{% endif %}>
+                        {{ cat.name }} ({{ cat.type.name }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="subcategory" class="form-label">Подкатегория</label>
+            <select id="subcategory" name="subcategory" class="form-select">
+                <option value="">Все подкатегории</option>
+                {% for sub in subcategories %}
+                    <option value="{{ sub.id }}"
+                            {% if request.GET.subcategory == sub.id|stringformat:"i" %}selected{% endif %}>
+                        {{ sub.name }} ({{ sub.category.name }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a href="{% url 'transaction_list' %}" class="btn btn-outline-secondary">Сбросить</a>
+        <a href="{% url 'transaction_create' %}" class="btn btn-success ms-auto">➕ Новая запись</a>
+    </div>
+</form>
+
+<!-- Таблица с ID для HTMX обновления -->
+<div id="transaction-table">
+    {% include "partials/transaction_table.html" %}
+</div>
+
+{% endblock %}

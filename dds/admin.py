@@ -1,5 +1,31 @@
+from django import forms
 from django.contrib import admin
 from .models import Transaction
+
+class TransactionAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        transaction_type = cleaned_data.get('type')
+        transaction_category = cleaned_data.get('category')
+        transaction_subcategory = cleaned_data.get('subcategory')
+        
+        # Проверка: категория должна быть привязана к типу
+        if transaction_category and transaction_type and transaction_category.type != transaction_type:
+            raise forms.ValidationError({
+                "category": f"Категория '{transaction_category.name}' не относится к типу '{transaction_type.name}'."
+            })
+        
+        # Проверка: подкатегория должна быть привязана к категории
+        if transaction_subcategory and transaction_category and transaction_subcategory.category != transaction_category:
+            raise forms.ValidationError({
+                "subcategory": f"Подкатегория '{transaction_subcategory.name}' не относится к категории '{transaction_category.name}'."
+            })
+
+        return cleaned_data
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):

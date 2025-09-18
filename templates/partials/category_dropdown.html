@@ -1,0 +1,16 @@
+<label for="id_category">Категория</label>
+<select name="category" id="id_category"
+        hx-get="{% url 'api_categories' %}"
+        hx-trigger="change from:#id_type"
+        hx-target="#id_category"
+        hx-include="[name=type]"
+        class="form-select">
+    <option value="">---------</option>
+    {% for category in categories %}
+        <option value="{{ category.id }}"
+                {% if category.id == view.get_object.category.id|default:'' or category.id|stringformat:"i" == form.category.value %}selected{% endif %}>
+            {{ category.name }}
+        </option>
+    {% endfor %}
+</select>
+{% if form.category.errors %}<div class="text-danger">{{ form.category.errors }}</div>{% endif %}

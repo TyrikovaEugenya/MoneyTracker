@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    {% if object %}Редактирование записи{% else %}Новая запись{% endif %}
+</h2>
+
+<form method="post" class="card card-body shadow-sm" {% if object %}hx-disable{% endif %}>
+    {% csrf_token %}
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            {{ form.created_at.label_tag }}
+            {{ form.created_at }}
+            {% if form.created_at.errors %}<div class="text-danger">{{ form.created_at.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.status.label_tag }}
+            {{ form.status }}
+            {% if form.status.errors %}<div class="text-danger">{{ form.status.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.type.label_tag }}
+            {{ form.type }}
+            {% if form.type.errors %}<div class="text-danger">{{ form.type.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Категория — обновляется при изменении типа -->
+        <div class="col-md-3" id="category-container">
+            {% include "partials/category_dropdown.html" %}
+        </div>
+
+        <!-- Подкатегория — обновляется при изменении категории -->
+        <div class="col-md-3" id="subcategory-container">
+            {% include "partials/subcategory_dropdown.html" %}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.amount.label_tag }}
+            {{ form.amount }}
+            {% if form.amount.errors %}<div class="text-danger">{{ form.amount.errors }}</div>{% endif %}
+        </div>
+    </div>
+
+    <div class="mt-3">
+        {{ form.comment.label_tag }}
+        {{ form.comment }}
+        {% if form.comment.errors %}<div class="text-danger">{{ form.comment.errors }}</div>{% endif %}
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            {% if object %}Сохранить{% else %}Создать{% endif %}
+        </button>
+        <a href="{% url 'transaction_list' %}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+
+{% endblock %}

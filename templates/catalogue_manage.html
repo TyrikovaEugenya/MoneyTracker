@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Управление справочниками</h2>
+
+<!-- Сообщения об успехе/ошибках -->
+{% if messages %}
+<div class="alert alert-info alert-dismissible fade show">
+    <ul class="mb-0">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <!-- Форма: Статус -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <strong>➕ Добавить статус</strong>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ status_form.as_p }}
+                    <button type="submit" name="create_status" class="btn btn-success btn-sm">Добавить</button>
+                </form>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for s in statuses %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ s.name }}
+                    <a href="{% url 'delete_status' s.pk %}"
+                       class="text-danger"
+                       onclick="return confirm('Удалить статус?')">✖️</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Пусто</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Форма: Тип -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <strong>➕ Добавить тип</strong>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ type_form.as_p }}
+                    <button type="submit" name="create_type" class="btn btn-success btn-sm">Добавить</button>
+                </form>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for t in types %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ t.name }}
+                    <a href="{% url 'delete_type' t.pk %}"
+                       class="text-danger"
+                       onclick="return confirm('Удалить тип?')">✖️</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Пусто</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Форма: Категория -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <strong>➕ Добавить категорию</strong>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ category_form.as_p }}
+                    <button type="submit" name="create_category" class="btn btn-success btn-sm">Добавить</button>
+                </form>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for c in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ c.name }}<br>
+                    <small class="text-muted">({{ c.type.name }})</small>
+                    <a href="{% url 'delete_category' c.pk %}"
+                       class="text-danger"
+                       onclick="return confirm('Удалить категорию?')">✖️</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Пусто</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Форма: Подкатегория -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <strong>➕ Добавить подкатегорию</strong>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ subcategory_form.as_p }}
+                    <button type="submit" name="create_subcategory" class="btn btn-success btn-sm">Добавить</button>
+                </form>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for sc in subcategories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ sc.name }}<br>
+                    <small class="text-muted">({{ sc.category.name }})</small>
+                    <a href="{% url 'delete_subcategory' sc.pk %}"
+                       class="text-danger"
+                       onclick="return confirm('Удалить подкатегорию?')">✖️</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Пусто</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
